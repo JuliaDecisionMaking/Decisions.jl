@@ -152,6 +152,7 @@ macro def_markov(name, traits...)
     memory_presence     = (mem_presence_defined ? traits[4] : (() -> nothing))
     reward_conditioning = (reward_cond_defined  ? traits[5] : (() -> nothing))
 
+    # TODO: There should absolutely not be an eval here
     network_type = @eval begin
         MarkovProblem(
             $multiagency(),

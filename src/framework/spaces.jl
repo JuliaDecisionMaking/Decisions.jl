@@ -27,6 +27,7 @@ Base.zero(::Space{T}) where {T} = zero(T)
 Base.one(::Space{T}) where {T} = one(T)
 Base.length(::Space) = Inf
 
+subspace(s::Space; kwargs...) = s
 
 """
     FiniteSpace{T, N} <: Space{T}
@@ -79,7 +80,7 @@ Base.in(el, ::TypeSpace{T}) where {T} = el isa T
 """
     SingletonSpace{T} <: Space{T}
 
-Space that 
+Space that consists of exactly one element `el`.
 """
 struct SingletonSpace{T} <: Space{T} 
     el::T
