@@ -8,21 +8,33 @@ function (vi::ValueIteration)(p::DecisionProblem)
 
 end
 
-function infinite_horizon_vi(ddn)
+function infinite_horizon_vi(ddn, atol)
     T = distribution_matrix_dict(ddn, :sp; row=:s, column=:sp, keys=:a)
     R = value_vector_dict(ddn, :r; index=:s, keys=:a)
     gamma = discount(objective(p))
 
     n = length(support(ddn[:s]))
+    actions = collect(support(ddn[:a]))
     V = zeros(n)
     oldV = fill(-Inf, n)
+    Q = zeros(n, length(actions))
     
-    while maximum(abs, V-oldV) > solver.atol
+    while maximum(abs, V-oldV) > atol
         oldV[:] = V
-        V[:] = max.((R[a] + gamma*T[a]*V for a in keys(R))...)
+        for (j, a) in enumerate(actions)
+            Q[:, j] = R[a] + gamma * T[a] * V
+        end
+        V[:] = maximum(Q, dims=2)
     end
 
-    return V
+    # extract the policy
+    # would be nice to have index here
+    policy_dict = Dict{eltype(support(ddn[:s])), eltype(actions)}()
+    for (si, s) in enumerate(support(ddn[:s]))
+        policy_dict[s] = actions[argmax(Q[si, :])]
+    end
+
+    return # a conditional distribution
 end
 
 
@@ -67,7 +79,7 @@ function value_vector_dict(ddn, node; index::Symbol, keys::Union{Symbol, Tuple})
     for k in support(ddn[keys])
         d[k] = zeros(length(support(node[index])))
         for (i, val) in enumerate(support(node[index]))
-            conditionals = ConditionalTuple(val, k) #TODO: this is probably slow
+            conditionals = ConditionalTuple(val, k) # Can the compiler handle this?
             d[k][i] = node[:r](val; conditionals...)
         end
     end
