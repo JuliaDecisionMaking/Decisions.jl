@@ -25,6 +25,7 @@ export initial
 include("algorithms.jl")
 export solve
 export simulate!
+export DecisionAlgorithm
 
 include("named_problems.jl")
 export MDP

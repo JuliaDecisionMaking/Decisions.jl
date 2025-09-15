@@ -1,6 +1,3 @@
-using DecisionNetworks
-using DecisionProblems
-
 struct GridPointSpace <: Space{Tuple{Int, Int}}
     nrows::Int
     ncols::Int
