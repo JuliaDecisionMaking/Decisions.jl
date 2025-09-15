@@ -39,7 +39,7 @@ objective(dp::DecisionProblem) = dp.objective
 
 Give the `DecisionNetwork` that is the model for `dp`.
 """
-model(dp::DecisionProblem) = dp.network
+model(dp::DecisionProblem) = dp.model
 
 """
     graph(::DecisionProblem{M, DG})
@@ -64,7 +64,7 @@ initial(dp::DecisionProblem, s::Symbol) = dp.initial()[s]
 initial(dp::DecisionProblem) = isnothing(dp.initial) ? (;) : dp.initial()
 
 
-Base.getindex(dp::DecisionProblem, rv::Symbol) = dp.network[rv]
+Base.getindex(dp::DecisionProblem, rv::Symbol) = dp.model[rv]
 
 """
     transform(t::DNTransformation, d::DecisionProblem)
@@ -75,7 +75,7 @@ transformation on the underlying `DecisionNetwork` or `DecisionGraph`, respectiv
 """
 function DecisionNetworks.transform(t::DNTransformation, d::DecisionProblem)
     DecisionProblem(
-        transform(t, d.network),
+        transform(t, d.model),
         d.objective,
         d.initial
     )
