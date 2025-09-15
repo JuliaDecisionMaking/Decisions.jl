@@ -31,7 +31,7 @@ Domains live in `DecisionDomains.jl`. You can use `gridworld.jl` as a (very roug
 Follow the same workflow as above if you have a decision making algorithm
 you'd like to implement. All sorts of solvers are welcome, though we tend to
 prioritize model-based, online algorithms that are particularly "archetypal"
-or serve as templates for other algorithms. Ntoe that you may need to define
+or serve as templates for other algorithms. Note that you may need to define
 a baseline to test it on as well, which might necessitate defining the
 problem type (see the docs).
 
