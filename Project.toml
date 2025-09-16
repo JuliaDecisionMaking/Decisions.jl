@@ -15,3 +15,10 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 [compat]
 Reexport = "1.2.2"
 Test = "1.11.0"
+
+[sources]
+DecisionAlgorithms = {path="DecisionAlgorithms.jl"}
+DecisionDomains    = {path="DecisionDomains.jl"}
+DecisionNetworks   = {path="DecisionNetworks.jl"}
+DecisionProblems   = {path="DecisionProblems.jl"}
+DecisionSettings   = {path="DecisionSettings.jl"}
