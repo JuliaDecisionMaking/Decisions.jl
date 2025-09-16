@@ -21,12 +21,21 @@ Representation of a finite set backed by type `T`.
 
 Supports iteration.
 """
-struct FiniteSpace{T, N} <: Space{T}
-    elements::Tuple{Vararg{T, N}}
+struct FiniteSpace{V, T} <: Space{T}
+    elements::V
+end 
+# Didn't like that the number of elements is necessarily part of the type signature
+# On the other hand, it required (at least temporarily) defining new constructers below
+const Collection{T} = Union{
+    AbstractArray{T},
+    NTuple{N, T}
+} where N
+
+function FiniteSpace(collection::Collection{T}) where T
+    FiniteSpace{typeof(collection), T}(collection)
 end
-function FiniteSpace(collection)
-    FiniteSpace{eltype(collection), length(collection)}(Tuple(collection))
-end
+
+FiniteSpace(gen::Base.Generator) = FiniteSpace(collect(gen))
 
 Base.in(el, s::FiniteSpace) = el ∈ s.elements
 Base.iterate(s::FiniteSpace) = iterate(s.elements)
