@@ -6,3 +6,7 @@ version = "0.0.1"
 [deps]
 DecisionNetworks = "a1ae968e-b3ba-4546-81a6-f6e3d3a9391a"
 DecisionProblems = "b716e576-a1f9-415a-b454-baf909aed799"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+StaticArrays = "1.9.15"

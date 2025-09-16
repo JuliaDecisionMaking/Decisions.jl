@@ -8,7 +8,7 @@ abstract type DecisionAlgorithm end
 Apply a decision algorithm to a model problem.
 
 Should output a NamedTuple, where each name is an action node of the model's
-`Decisionnetwork`, and each value is its solution `ConditionalDist`. The 
+`DecisionNetwork`, and each value is its solution `ConditionalDist`. The 
 """
 function solve end
 

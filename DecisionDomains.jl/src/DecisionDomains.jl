@@ -2,6 +2,7 @@ module DecisionDomains
 
 using DecisionNetworks
 using DecisionProblems
+using StaticArrays
 
 include("gridworld.jl")
 
