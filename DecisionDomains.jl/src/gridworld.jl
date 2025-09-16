@@ -1,12 +1,11 @@
-struct GridPointSpace <: Space{Tuple{Int, Int}}
+const GWPos = SVector{2, Int}
+
+struct GridPointSpace <: Space{GWPos}
     nrows::Int
     ncols::Int
 end
 
-const GWPos = SVector{2, Int}
-
 Base.in(p::GWPos, g::GridPointSpace) = (0 < p[1] ≤ g.nrows) && (0 < p[2] ≤ g.ncols)
-Base.eltype(::GridPointSpace) = GWPos
 Base.length(g::GridPointSpace) = g.nrows * g.ncols
 Base.iterate(g::GridPointSpace) = iterate(
     Iterators.map(GWPos, Iterators.product(1:g.nrows, 1:g.ncols))
@@ -32,7 +31,7 @@ function rel_dirs(s, a)
     (forward, left, right, s)
 end
 
-function Iceworld(; p_slip, nrows, ncols, holes, target)
+function Iceworld(; p_slip=0.30, nrows=10, ncols=10, holes, target=GWPos(7,7))
     transition = @ConditionalDist Tuple{Int, Int} begin
         function support(; s, a)
             if isnothing(s) && isnothing(a)
