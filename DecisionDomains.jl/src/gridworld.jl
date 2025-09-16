@@ -126,7 +126,7 @@ function GridWorld(;
             (8,8) => 3.0
         ), 
         terminate_from  = Set(keys(rewards)),
-        tprob = 0.90
+        tprob = 0.70
     )
     mdp = (; nrows, ncols, rewards, terminate_from, tprob) # me desperately wanting the mdp as an object
     transition = @ConditionalDist GWPos begin
@@ -204,7 +204,6 @@ function gw_destinations(mdp::NamedTuple, s)
     return filter(destinations) do s
         inbounds(s, mdp.nrows, mdp.ncols)
     end
-    return 
 end
 
 function gw_transition(mdp::NamedTuple, s::AbstractVector{Int}, a::Cardinal)
