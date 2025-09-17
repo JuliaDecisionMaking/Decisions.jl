@@ -33,6 +33,7 @@ POMDPs.reward(p::WrappedProblem, s, a) =  p.p[:r](; s, a) # FIXME: assumes rewar
 
 #### There's probably a much cleaner way to generate these distributions ####
 
+# FIXME: There must be some better default fallback
 function to_pomdp_distribution(d, support; kwargs...)
     return POMDPTools.ImplicitDistribution() do rng
         d(rng; kwargs...)
@@ -120,21 +121,21 @@ function pomdps_initialstate(m::Union{POMDPs.MDP{S}, POMDPs.POMDP{S}}) where S
     end
 end
 
-function DecisionProblems.MDP(pomdp::POMDPs.MDP)
+function convert2decisions(m::POMDPs.MDP)
     return DecisionProblems.MDP(
-        DiscountedReward(POMDPs.discount(pomdp), pomdps_initialstate(pomdp));
-        sp = pomdps_transition(pomdp),
-        r = pomdps_reward(pomdp),
-        a = POMDPs.actions(pomdp)
+        DiscountedReward(POMDPs.discount(m)), pomdps_initialstate(m);
+        sp = pomdps_transition(m),
+        r = pomdps_reward(m),
+        a = DecisionNetworks.Space(POMDPs.actions(m))
     )
 end
 
-function DecisionProblems.POMDP(pomdp::POMDPs.POMDP)
+function convert2decisions(m::POMDPs.POMDP)
     return DecisionProblems.POMDP(
-        DiscountedReward(POMDPs.discount(pomdp), pomdps_initialstate(pomdp));
-        sp = pomdps_transition(pomdp),
-        o = pomdps_observation(pomdp),
-        r = pomdps_reward(pomdp),
-        a = POMDPs.actions(pomdp)
+        DiscountedReward(POMDPs.discount(m)), pomdps_initialstate(m);
+        sp = pomdps_transition(m),
+        o = pomdps_observation(m),
+        r = pomdps_reward(m),
+        a = DecisionNetworks.Space(POMDPs.actions(m))
     )
 end

@@ -41,7 +41,7 @@ Base.in(el, s::FiniteSpace) = el ∈ s.elements
 Base.iterate(s::FiniteSpace) = iterate(s.elements)
 Base.iterate(s::FiniteSpace, state) = iterate(s.elements, state)
 Base.length(s::FiniteSpace) = length(s.elements)
-
+Base.getindex(s::FiniteSpace, args...) = getindex(s.elements, args...)
 
 """
     RangeSpace{T} <: Space{T}
@@ -79,3 +79,8 @@ Space that consists of exactly one element `el`.
 struct SingletonSpace{T} <: Space{T} 
     el::T
 end
+
+
+## FIXME: probably a better more robust way to do this
+Space(collection::Collection) = FiniteSpace(collection)
+Space(x) = TypeSpace(x)
