@@ -13,6 +13,12 @@ Base.iterate(g::GridPointSpace) = iterate(
 Base.iterate(g::GridPointSpace, state) = iterate(
     Iterators.map(GWPos, Iterators.product(1:g.nrows, 1:g.ncols)), state
 )
+Base.eachindex(g::GridPointSpace) = CartesianIndices((Base.OneTo(g.nrows), Base.OneTo(g.ncols)))
+Base.getindex(g::GridPointSpace, i::CartesianIndex{2}) = GWPos(Tuple(i))
+Base.getindex(g::GridPointSpace, i::Int) = getindex(g, eachindex(g)[i])
+
+DecisionNetworks.index(g::GridPointSpace, s::GWPos) = LinearIndices(eachindex(g))[s...]
+
 
 @enum Cardinal NORTH EAST SOUTH WEST
 
@@ -127,10 +133,10 @@ end
 function GridWorld(; 
         nrows = 10, ncols = 10, 
         rewards         = Dict(
-            (4,3) => -10.0, 
-            (4,6) => -5.0, 
-            (9,3) => 10.0, 
-            (8,8) => 3.0
+            GWPos(4,3) => -10.0, 
+            GWPos(4,6) => -5.0, 
+            GWPos(9,3) => 10.0, 
+            GWPos(8,8) => 3.0
         ), 
         terminate_from  = Set(keys(rewards)),
         tprob = 0.70
@@ -212,7 +218,7 @@ end
 
 function gw_transition(mdp::NamedTuple, s::AbstractVector{Int}, a::Cardinal)
     if s in mdp.terminate_from || isterminal(s)
-        return terminal
+        return SA[terminal], SA[1.0]
     end
     A = instances(Cardinal)
 
