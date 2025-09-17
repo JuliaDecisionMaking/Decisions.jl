@@ -49,16 +49,6 @@ pomdp_initialstate(p::Union{MDP, POMDP}) = to_pomdp_distribution(p[:s], support(
 pomdp_transition(p::Union{MDP, POMDP}, s, a) = to_pomdp_distribution(p[:sp], support(p[:sp]; s, a); s, a)
 pomdp_observation(p::POMDP, s, a, sp) = to_pomdp_distribution(p[:o], support(p[:o]; s, a, sp); s, a, sp)
 
-## FIXME: should be a way to do this only working with types like Base.return_types
-
-function infer_statetype(m::Union{MDP, POMDP})
-    return eltype(support(m[:s]))
-end
-
-function infer_actiontype(m::Union{MDP, POMDP})
-    return eltype(support(m[:a]))
-end
-
-function infer_obstype(m::Union{MDP, POMDP})
-    return eltype(support(m[:o]))
-end
+infer_statetype(m::Union{MDP, POMDP}) = eltype(m[:s])
+infer_actiontype(m::Union{MDP, POMDP}) = eltype(m[:a])
+infer_obstype(m::Union{MDP, POMDP}) = eltype(m[:o])
