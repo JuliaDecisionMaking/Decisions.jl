@@ -99,7 +99,10 @@ function Iceworld(;
 
     initial_state = @ConditionalDist @NamedTuple{s::GWPos} begin
         function rand(rng)
-            (;s=(1, 1))
+            (;s=GWPos(1, 1))
+        end
+        function support()
+            (;s=SingletonSpace(GWPos(1, 1)))
         end
     end
 
@@ -173,10 +176,10 @@ function GridWorld(;
 
     initial_state = @ConditionalDist @NamedTuple{s::GWPos} begin
         function rand(rng)
-            (;s=SA[1,1])
+            (;s=GWPos(1,1))
         end
         function support() # Not sure if this is how it's meant to be implemented
-            (;s=[SA[1,1]])
+            (;s=SingletonSpace(GWPos(1, 1)))
         end
     end
 

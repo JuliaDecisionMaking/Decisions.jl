@@ -34,7 +34,7 @@ POMDPs.reward(p::WrappedProblem, s, a) =  p.p[:r](; s, a) # FIXME: assumes rewar
 #### There's probably a much cleaner way to generate these distributions ####
 
 function to_pomdp_distribution(d, support; kwargs...)
-    return ImplicitDistribution() do rng
+    return POMDPTools.ImplicitDistribution() do rng
         d(rng; kwargs...)
     end
 end
@@ -50,7 +50,7 @@ function to_pomdp_distribution(d, support::SingletonSpace; kwargs...)
     return POMDPTools.Deterministic(support.el)
 end
 
-pomdp_initialstate(p::Union{MDP, POMDP}) = to_pomdp_distribution(p[:s], support(p[:s]))
+pomdp_initialstate(p::Union{MDP, POMDP}) = to_pomdp_distribution(p.initial, support(p.initial).s) # FIXME: this prob breaks if support isn't implemented
 pomdp_transition(p::Union{MDP, POMDP}, s, a) = to_pomdp_distribution(p[:sp], support(p[:sp]; s, a); s, a)
 pomdp_observation(p::POMDP, s, a, sp) = to_pomdp_distribution(p[:o], support(p[:o]; s, a, sp); s, a, sp)
 
