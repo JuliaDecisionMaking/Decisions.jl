@@ -28,81 +28,26 @@ POMDPs.reward(p::WrappedProblem, s, a) =  p.p[:r](; s, a) # FIXME: assumes rewar
 
 #### There's probably a much cleaner way to generate these distributions ####
 
-## TRANSITION
-
-function pomdp_transition(mdp::Union{MDP, POMDP}, s, a)
-    T = mdp[:sp]
-    SP = support(T; s, a)
-    return transition(T, SP, s, a)
-end
-
-function transition(T, SP, s, a)
+function to_pomdp_distribution(d, support; kwargs...)
     return ImplicitDistribution() do rng
-        T(rng; s, a)
+        d(rng; kwargs...)
     end
 end
 
-function transition(T, SP::FiniteSpace, s, a)
-    p = map(SP) do sp
-        pdf(T, sp; s, a)
+function to_pomdp_distribution(d, support::FiniteSpace; kwargs...)
+    p = map(support) do x
+        pdf(d, x; kwargs...)
     end
-    return POMDPTools.SparseCat(SP, p)
+    return POMDPTools.SparseCat(support, p)
 end
 
-function transition(T, SP::SingletonSpace, s, a)
-    return POMDPTools.Deterministic(SP.el)
+function to_pomdp_distribution(d, support::SingletonSpace; kwargs...)
+    return POMDPTools.Deterministic(support.el)
 end
 
-## OBSERVATION
-
-function pomdp_observation(pomdp::POMDP, s, a, sp)
-    O = pomdp[:o]
-    OS = support(O; s, a, sp)
-    return observation(O, OS, s, a, sp)
-end
-
-function observation(O, OS, s, a, sp)
-    return POMDPTools.ImplicitDistribution() do rng
-        O(rng; s, a, sp)
-    end
-end
-
-function observation(O, OS::FiniteSpace, s, a, sp)
-    p = map(OS) do o
-        pdf(O, o; s, a, sp)
-    end
-    return POMDPTools.SparseCat(OS, p)
-end
-
-function observation(O, OS::SingletonSpace, s, a, sp)
-    return POMDPTools.Deterministic(OS.el)
-end
-
-## INITIALSTATE
-
-function pomdp_initialstate(p::Union{MDP,POMDP})
-    S = p.initial
-    SS = support(S)
-    return initialstate(S, SS)
-end
-
-function initialstate(S, SS)
-    return POMDPTools.ImplicitDistribution() do rng
-        S(rng)
-    end
-end
-
-function initialstate(S, SS::FiniteSpace)
-    p = map(SS) do s
-        pdf(S, s)
-    end
-    return POMDPTools.SparseCat(SS, p)
-end
-
-function initialstate(S, SS::SingletonSpace)
-    return POMDPTools.Deterministic(SS.el)
-end
-
+pomdp_initialstate(p::Union{MDP, POMDP}) = to_pomdp_distribution(p[:s], support(p[:s]))
+pomdp_transition(p::Union{MDP, POMDP}, s, a) = to_pomdp_distribution(p[:sp], support(p[:sp]; s, a); s, a)
+pomdp_observation(p::POMDP, s, a, sp) = to_pomdp_distribution(p[:o], support(p[:o]; s, a, sp); s, a, sp)
 
 ## FIXME: should be a way to do this only working with types like Base.return_types
 
