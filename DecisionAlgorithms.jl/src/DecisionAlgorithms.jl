@@ -4,6 +4,6 @@ using DecisionProblems
 using DecisionNetworks
 
 include("vi.jl")
-export ValueIteration, solve!
+export ValueIteration
 
 end # module DecisionAlgorithms

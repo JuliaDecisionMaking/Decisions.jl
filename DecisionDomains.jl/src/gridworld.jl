@@ -31,8 +31,15 @@ function rel_dirs(s, a)
     (forward, left, right, s)
 end
 
-function Iceworld(; p_slip=0.30, nrows=10, ncols=10, holes, target=GWPos(7,7))
-    transition = @ConditionalDist Tuple{Int, Int} begin
+function Iceworld(; 
+        p_slip  = 0.30, 
+        nrows   = 10, 
+        ncols   = 10, 
+        holes   = [GWPos(3,3), GWPos(5,5)], 
+        target  = GWPos(7,7)
+    )
+    mdp = (;p_slip, nrows, ncols, holes, target)
+    transition = @ConditionalDist GWPos begin
         function support(; s, a)
             if isnothing(s) && isnothing(a)
                 GridPointSpace(nrows, ncols)
@@ -40,9 +47,7 @@ function Iceworld(; p_slip=0.30, nrows=10, ncols=10, holes, target=GWPos(7,7))
                 if s == target
                     FiniteSpace([terminal]) # TODO: Could productively specialize
                 else
-                FiniteSpace(
-                    [d for d in rel_dirs(s, a) if is_in_bounds(d, nrows, ncols)]
-                )
+                    FiniteSpace(gw_destinations(mdp, s))
                 end
             end
         end
@@ -92,16 +97,16 @@ function Iceworld(; p_slip=0.30, nrows=10, ncols=10, holes, target=GWPos(7,7))
         end
     end
 
-    initial_state = @ConditionalDist @NamedTuple{s::Tuple{Int, Int}} begin
+    initial_state = @ConditionalDist @NamedTuple{s::GWPos} begin
         function rand(rng)
             (;s=(1, 1))
         end
     end
 
     MDP(DiscountedReward(0.99), initial_state;
-        sp=transition,
-        r=reward,
-        a=FiniteSpace([NORTH, SOUTH, EAST, WEST])
+        sp = transition,
+        r  = reward,
+        a  = FiniteSpace(collect(instances(Cardinal)))
     )
 end
 
@@ -136,16 +141,13 @@ function GridWorld(;
                 if s ∈ terminate_from
                     FiniteSpace([terminal]) # TODO: Could productively specialize
                 else
-                FiniteSpace(
-                    gw_destinations(mdp, s)
-                    # [d for d in rel_dirs(s, a) if is_in_bounds(d, nrows, ncols)]
-                )
+                    FiniteSpace(gw_destinations(mdp, s))
                 end
             end
         end
 
         function rand(rng; s, a)
-            states, probs = gw_transition((; nrows, ncols, terminate_from, rewards), s, a)
+            states, probs = gw_transition(mdp, s, a)
             r = sum(probs)*rand(rng)
             tot = zero(eltype(probs))
             for (s, p) in zip(states, probs)

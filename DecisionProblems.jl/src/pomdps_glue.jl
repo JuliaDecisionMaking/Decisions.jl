@@ -1,14 +1,14 @@
 struct WrappedMDP{P<:MDP, S, A} <: POMDPs.MDP{S, A}
     p::P
     function WrappedMDP(p::MDP)
-        return new{typeof(p), infer_statetype(p), infer_actiontype(p)}(p)
+        return new{typeof(p), POMDPs.statetype(p), POMDPs.actiontype(p)}(p)
     end
 end
 
 struct WrappedPOMDP{P<:POMDP, S, A, O} <: POMDPs.POMDP{S, A, O}
     p::P
     function WrappedPOMDP(p::POMDP)
-        return new{typeof(p), infer_statetype(p), infer_actiontype(p), infer_obstype(p)}(p)
+        return new{typeof(p), POMDPs.statetype(p), POMDPs.actiontype(p), POMDPs.obstype(p)}(p)
     end
 end
 
@@ -49,6 +49,6 @@ pomdp_initialstate(p::Union{MDP, POMDP}) = to_pomdp_distribution(p[:s], support(
 pomdp_transition(p::Union{MDP, POMDP}, s, a) = to_pomdp_distribution(p[:sp], support(p[:sp]; s, a); s, a)
 pomdp_observation(p::POMDP, s, a, sp) = to_pomdp_distribution(p[:o], support(p[:o]; s, a, sp); s, a, sp)
 
-infer_statetype(m::Union{MDP, POMDP}) = eltype(m[:s])
-infer_actiontype(m::Union{MDP, POMDP}) = eltype(m[:a])
-infer_obstype(m::Union{MDP, POMDP}) = eltype(m[:o])
+POMDPs.statetype(m::Union{MDP, POMDP}) = eltype(m[:s])
+POMDPs.actiontype(m::Union{MDP, POMDP}) = eltype(m[:a])
+POMDPs.obstype(m::Union{MDP, POMDP}) = eltype(m[:o])
