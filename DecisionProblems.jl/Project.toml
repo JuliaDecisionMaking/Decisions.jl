@@ -5,7 +5,11 @@ version = "0.0.1"
 
 [deps]
 DecisionNetworks = "a1ae968e-b3ba-4546-81a6-f6e3d3a9391a"
+POMDPTools = "7588e00f-9cae-40de-98dc-e0c70c48cdd7"
+POMDPs = "a93abf59-7444-517b-a68a-c42f96afdd7d"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+POMDPTools = "1.1.0"
+POMDPs = "1.0.0"
 StaticArrays = "1.9.14"
