@@ -6,3 +6,7 @@ version = "0.0.1"
 [deps]
 DecisionNetworks = "a1ae968e-b3ba-4546-81a6-f6e3d3a9391a"
 DecisionProblems = "b716e576-a1f9-415a-b454-baf909aed799"
+
+[sources]
+DecisionNetworks   = {path="../DecisionNetworks.jl"}
+DecisionProblems   = {path="../DecisionProblems.jl"}
