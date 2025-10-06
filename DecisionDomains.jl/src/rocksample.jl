@@ -52,7 +52,7 @@ function RockSampleDecisionsPOMDP(;pomdp = RockSample.RockSamplePOMDP())
         function support(;a,m,o)
             POMDPs.update(up,m,a,o)
         end
-        
+
         function rand(rng;a,m,o)
             POMDPs.update(up,m,a,o)
         end
@@ -66,7 +66,7 @@ function RockSampleDecisionsPOMDP(;pomdp = RockSample.RockSamplePOMDP())
             end
         end
     end
-    
+
     rsinitialbel = @ConditionalDist Tuple{RockSample.RSState,Int} begin
         function support(;)
             m0
@@ -92,7 +92,7 @@ function RockSampleDecisionsPOMDP(;pomdp = RockSample.RockSamplePOMDP())
         end
     end
 
-    return Decisions.POMDP(DiscountedReward(POMDPs.discount(pomdp)),rsinitialbel;
+    return DecisionProblems.POMDP(DiscountedReward(POMDPs.discount(pomdp)),rsinitialbel;
     sp = rstransition,
     r = rsreward,
     o = rsobservation,

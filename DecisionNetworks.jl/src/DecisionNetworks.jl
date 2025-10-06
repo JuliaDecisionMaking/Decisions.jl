@@ -141,6 +141,10 @@ export POMDP_DN
 export MG_DN
 export DecPOMDP_DN
 
+include("special_transformations.jl")
+export MOMDP_DN
+export PartialToMixedObs
+
 include("visualization.jl")
 export dnplot
 export as_graphs_jl
