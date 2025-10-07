@@ -1,5 +1,8 @@
 module DecisionSettings
 
-greet() = print("Hello World!")
+using DecisionProblems
+using DecisionNetworks
+
+include("settings.jl")
 
 end # module DecisionSettings

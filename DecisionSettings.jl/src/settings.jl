@@ -3,6 +3,9 @@
 """
 abstract type DecisionEnvironment end
 
+# FIXME: move elsewhere probably
+abstract type DecisionAgent end
+
 """
     evaluate(env::DecisionEnvironment, bhv, stopping_metric, metrics...) where {DN}
 

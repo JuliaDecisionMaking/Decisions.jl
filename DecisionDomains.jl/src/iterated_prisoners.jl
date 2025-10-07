@@ -1,5 +1,3 @@
-using Decisions
-
 @enum PrisonerChoice SILENT BETRAY
 const ChoicePair = Tuple{PrisonerChoice, PrisonerChoice}
 function IteratedPrisoners()
@@ -21,7 +19,7 @@ function IteratedPrisoners()
             end
         end
     end
-    Decisions.MG_DN((; i=2); sp=transition, r=reward, 
+    DecisionNetworks.MG_DN((; i=2); sp=transition, r=reward, 
         a=FiniteSpace([SILENT, BETRAY]))
 end
 action = @ConditionalDist PrisonerChoice begin
@@ -29,10 +27,10 @@ action = @ConditionalDist PrisonerChoice begin
         rand([SILENT, BETRAY])
     end
 end
-behavior = (; a=action)
+# behavior = (; a=action)
 
-mg = IteratedPrisoners()
-sample(mg, behavior, (; s=(SILENT, SILENT))) do output
-    println(output)
-    return (output[:a][1] == BETRAY) && (output[:a][2] == BETRAY)
-end 
+# mg = IteratedPrisoners()
+# sample(mg, behavior, (; s=(SILENT, SILENT))) do output
+#     println(output)
+#     return (output[:a][1] == BETRAY) && (output[:a][2] == BETRAY)
+# end 
