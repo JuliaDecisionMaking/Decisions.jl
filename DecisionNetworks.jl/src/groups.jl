@@ -58,6 +58,13 @@ abstract type Plate{id, idxs, hints} <: RVGroup{id, idxs} end
 
 hints(::Plate{id, idxs, H}) where {id, idxs, H} = H
 
+"""
+    with_hints(p::Plate; hints...)
+
+Alter the node hints for a Plate, producing a new Plate.
+"""
+with_hints(p::Plate; hints...) = p
+
 
 function Terminality(::Plate{id, idxs, hints}) where {id, idxs, hints} 
     if :is_terminable ∉ keys(hints) 
@@ -79,6 +86,8 @@ struct Indep{id, idxs, hints} <: Plate{id, idxs, hints}
     Indep(id, idxs...; hints...) = new{id, _sorted_tuple(idxs), NamedTuple(hints)}()
 end
 
+with_hints(::Indep{id, idxs, hints}; new_hints...) where {id, idxs, hints} = Indep(id, idxs; new_hints...)
+
 
 """
     Joint
@@ -91,6 +100,8 @@ struct Joint{id, idxs, hints} <: Plate{id, idxs, hints}
     Joint(id, idxs...; hints...) = new{id, _sorted_tuple(idxs), NamedTuple(hints)}()
 end
 
+with_hints(::Joint{id, idxs, hints}; new_hints...) where {id, idxs, hints} = Joint(id, idxs; new_hints...)
+
 
 """
     JointAndIndep
@@ -98,12 +109,13 @@ end
 A group of random variables that are jointly related on some axes and independently related
 on the rest.
 """
-struct JointAndIndep{id, idxs, n_joint, hints} <: Plate{id, idxs, hints}
-    function JointAndIndep(ids, joint_idxs, indep_idxs, hints=false)
-        new{ids, _sorted_tuple((joint_idxs..., indep_idxs...)), length(joint_idxs), hints}
-    end
+struct JointAndIndep{id, idxs, n_joint, hints} <: Plate{id, idxs, hints} end
+
+function JointAndIndep(ids, joint_idxs, indep_idxs, hints=false)
+    new{ids, _sorted_tuple((joint_idxs..., indep_idxs...)), length(joint_idxs), hints}
 end
 
+with_hints(::JointAndIndep{id, idxs, n, hints}; new_hints...) where {id, idxs, n, hints} = JointAndIndep{id, idxs, n, NamedTuple(new_hints)}()
 
 """
     abstract type Condition <: RVGroup

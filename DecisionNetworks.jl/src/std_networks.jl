@@ -85,6 +85,7 @@ Assumes the memory node is present and the reward is conditioned on `(:s, :a, :s
 # @markov_alias DecMMDP_DN     _Traits(@HasS, @NAgents, @UnCorr, @AnyMem, @DeCentr, @SARwd)
 # @markov_alias DecMSMDP_DN    _Traits(@HasS, @NAgents, @UnCorr, @AnyMem, @DeCentr, @SARwd, @Semi)
 
+
 """
     MG_DN
 
@@ -112,7 +113,7 @@ process.
 # @markov_alias MPOMDP_DN      _Traits(@HasS, @NAgents, @UnCorr, @PObs, @YesMem, @SARwd)
 # @markov_alias MPOSMDP_DN     _Traits(@HasS, @NAgents, @UnCorr, @PObs, @YesMem, @SARwd, @Semi)
 # @markov_alias DecPOSMDP_DN   _Traits(@HasS, @NAgents, @UnCorr, @PObs, @YesMem, @DeCentr, @SARwd, @Semi)
-# @markov_alias POMG_DN        _Traits(@HasS, @NAgents, @UnCorr, @PObs, @YesMem, @DeCentr, @Comp, @SARwd)
+@markov_alias POMG_DN        _Traits(@HasS, @NAgents, @UnCorr, @PObs, @YesMem, @DeCentr, @Comp, @SARwd)
 # @markov_alias POSMG_DN       _Traits(@HasS, @NAgents, @UnCorr, @PObs, @YesMem, @DeCentr, @Comp, @SARwd, @Semi)
 # @markov_alias IndPOMDP_DN    _Traits(@HasS, @NAgents, @UnCorr, @PObs, @YesMem, @DeCentr, @Indv, @SARwd)
 # @markov_alias IndPOSMDP_DN   _Traits(@HasS, @NAgents, @UnCorr, @PObs, @YesMem, @DeCentr, @Indv, @SARwd, @Semi)

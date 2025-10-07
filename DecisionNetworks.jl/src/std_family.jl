@@ -1,8 +1,3 @@
-
-# This is the kind of thing that makes Kyle call my style "far from normal" (lol).
-#   But it's really convenient to have a collection of arbitrary Holy traits! And Holy 
-#   traits are types, so we get a Type-valued dict. 
-
 struct MarkovTraits
     dict::Dict{Type{<:DecisionsTrait}, DecisionsTrait}
 
@@ -329,12 +324,6 @@ end
     (MemoryPresent, Decentralized) => Parallel(:m, :i)
     (MemoryAbsent,  Any)           => nothing
 end
-@markov_edge (:o => :a) Observability MemoryPresence Centralization begin
-    (PartiallyObservable, MemoryAbsent,  Centralized)   => Dense(:o)
-    (PartiallyObservable, MemoryAbsent,  Decentralized) => Parallel(:o, :i)
-    (PartiallyObservable, MemoryPresent, Any) => nothing
-    (FullyObservable,     Any,           Any) => nothing
-end
 @markov_edge (:s => :a) Statefulness Observability MemoryPresence Centralization begin
     (Stateful,      FullyObservable,     MemoryAbsent,  Any)           => Dense(:s)
     (AgentFactored, FullyObservable,     MemoryAbsent,  Centralized)   => Dense(:s)
@@ -351,6 +340,14 @@ end
     (PartiallyObservable, Any)        => Joint(:o    ; is_terminable=false)
     (FullyObservable,     Any)        => nothing
 end
+
+# @markov_node :o Observability Multiagency Centralization begin
+#     (PartiallyObservable, MultiAgent) => Joint(:o, :i; is_terminable=false)
+#     (PartiallyObservable, Any)        => Joint(:o    ; is_terminable=false)
+#     (FullyObservable,     Any)        => nothing
+#     (PartiallyObservable, MultiAgent, Decentralized) => Indep(:o, :i; is_terminable=false)
+# end
+
 @markov_edge (:sp => :o) Statefulness begin 
     Stateful      => Dense(:sp)
     AgentFactored => Parallel(:sp, :i)

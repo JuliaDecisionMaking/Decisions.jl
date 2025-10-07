@@ -48,24 +48,32 @@ Discounting is forward-directed; that is, it is assumed that the first call to
 """
 mutable struct Discounted{id} <: DecisionMetric
     #TODO: Doesn't make sense for semi-Markov; discount rate vs factor
-    discount::Float64
-    cuml_discount::Float64
-    agg::Float64
-    Discounted(id::Symbol, discount)    = new{id}(discount, 1.0, 0.0)
-    Discounted{id}(discount) where {id} = new{id}(discount, 1.0, 0.0)
+    discount::Vector{Float64}
+    cuml_discount::Vector{Float64}
+    agg::Vector{Float64}
+    Discounted(id::Symbol, discount::Float64)            = new{id}([discount], [1.0], [0.0])
+    Discounted(id::Symbol, discount::Vector{Float64})    = new{id}(discount, ones(shape(discount)), zeros(shape(discount)))
+    Discounted{id}(discount::Float64)            where {id} = new{id}([discount], [1.0], [0.0])
+    Discounted{id}(discount::Vector{Float64})    where {id} = new{id}(discount, ones(shape(discount)), zeros(shape(discount)))
 end
 
 function aggregate!(dm::Discounted{id}, values) where {id}
-    dm.agg += dm.cuml_discount * values[id]
-    dm.cuml_discount *= dm.discount
+    dm.agg = dm.agg .+ dm.cuml_discount .* values[id]
+    dm.cuml_discount = dm.cuml_discount .* dm.discount
 end
 
 function reset!(dm::Discounted)
-    dm.agg = 0.0
-    dm.cuml_discount = 1.0
+    dm.agg *= 0.0
+    dm.cuml_discount = dm.cuml_discount .* 0.0 .+ 1.0
 end
 
-output(dm::Discounted) = dm.agg
+function output(dm::Discounted) 
+    if length(dm.agg) == 1
+        dm.agg[1]
+    else
+        dm.agg
+    end
+end
 
 """
     const DiscountedReward

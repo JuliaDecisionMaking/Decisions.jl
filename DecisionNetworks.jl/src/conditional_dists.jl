@@ -441,19 +441,27 @@ A conditional distribution that wraps another, renaming the conditioning variabl
 struct RenamedDist{K_new, T, K_old, D<:ConditionalDist{K_old, T}, N} <: ConditionalDist{K_new, T}
     base_dist::D
 
-    function RenamedDist(cd; names...) 
+    function RenamedDist(cd; new_names...) 
         T = eltype(cd)
         K_old = conditions(cd)
-        K_new = values(names) |> _sorted_tuple
-        @assert K_old == keys(names)
-        new{K_new, T, K_old, typeof(cd), names |> NamedTuple}(cd)
+
+        name_map = map(K_old) do rv
+            new_rv = (rv ∈ keys(new_names)) ? new_names[rv] : rv
+            rv => new_rv
+        end |> NamedTuple
+
+        K_new = values(name_map) |> _sorted_tuple
+        @assert K_old == keys(name_map)
+        new{K_new, T, K_old, typeof(cd), name_map}(cd)
     end
 
     # TODO: Prevent stacking RenamedDist needlessly
 end
 
-@generated function _rvs_for(::RenamedDist{K_new, T, K_old, D, N}, rvs) where {K_new, T, K_old, D, N}
-    :(K_old .=> rvs[$(N[K_old])])
+# TODO: This is really slow! Should be @generated
+function _rvs_for(::RenamedDist{K_new, T, K_old, D, N}, rvs) where {K_new, T, K_old, D, N}
+    reverse_map = (values(N) .=> keys(N)) |> NamedTuple
+    values(reverse_map[keys(rvs)]) .=> values(values((rvs))) # ugh
 end
 
 function rand!(rng::AbstractRNG, cd::RenamedDist{K, T}, dest::T; kwargs...) where {K, T}

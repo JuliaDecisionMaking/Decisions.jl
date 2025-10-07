@@ -34,11 +34,11 @@ Insert one or more nodes into a decision graph or decision network.
 """
 struct Insert <: DNTransformation 
     nodes
-    Insert(nodes...) = new(node_def.(nodes) |> Tuple)
+    Insert(nodes...) = new( Tuple.(nodes)) #?
 end
 
 function transform(trans::Insert, g::DecisionGraph)
-    new_nodes = merge(nodes(g), NamedTuple([name(node[2]) => n for n in trans.nodes]))
+    new_nodes = merge(nodes(g), NamedTuple([name(n[2]) => n for n in trans.nodes]))
     DecisionGraph(new_nodes, dynamic_pairs(g), ranges(g))
 end
 
@@ -488,3 +488,33 @@ function transform(trans::Rename, dn::DecisionNetwork)
     new_impls = NamedTuple{new_names}(new_dists)
     G(; new_impls...)
 end
+
+
+"""
+    SetNodeHints <: DNTransformation
+    SetNodeHints(node; hints...)
+
+Transformation which sets the node hints for a node in a network.
+"""
+struct SetNodeHints{H} <: DNTransformation
+    node::Symbol
+    hints::H
+    function SetNodeHints(node; hints...) 
+        ht = hints |> NamedTuple
+        new{typeof(ht)}(node, ht)
+    end
+end
+
+function transform(trans::SetNodeHints, dn::DecisionGraph)
+
+    new_nodes = map(values(nodes(dn))) do node_def
+        if name(node_def[2]) == trans.node
+            new_node_output = with_hints(node_def[2]; trans.hints...)
+            node_def[1] => new_node_output
+        else
+            node_def
+        end
+    end
+    DecisionGraph(new_nodes, dynamic_pairs(dn), ranges(dn))
+end
+transform(trans::SetNodeHints, dn::DecisionNetwork) = _default_transform(trans, dn)

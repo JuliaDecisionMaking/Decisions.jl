@@ -3,12 +3,12 @@
 abstract type DecisionAlgorithm end
 
 """
-    solve(da::DecisionAlgorithm, model::DecisionProblem; metrics...)
+    solve(da::DecisionAlgorithm, model::DecisionProblem)
 
 Apply a decision algorithm to a model problem.
 
 Should output a NamedTuple, where each name is an action node of the model's
-`DecisionNetwork`, and each value is its solution `ConditionalDist`. The 
+`DecisionNetwork`, and each value is its solution `ConditionalDist`. 
 """
 function solve end
 
@@ -27,30 +27,31 @@ If `fn` is provided, it is passed through to `sample` to enable early terminatio
 """
 function simulate!(fn, da::DecisionAlgorithm, dp::DecisionProblem; metrics...)
 
-    reset!.(external_metrics)
-    reset!(dp.metric)
+    reset!.([m for m in metrics])
+    reset!(dp.objective)
 
     decisions = solve(da, dp)
     initialization = isnothing(dp.initial) ? (;) : dp.initial()
     if isnothing(fn)
-        sample(dp.network, decisions, initialization) do rvs
-            aggregate!(dp.metric, rvs)
-            for other_metric in external_metrics
+        sample(dp.model, decisions, initialization) do rvs
+            aggregate!(dp.objective, rvs)
+            for other_metric in metrics
                 aggregate!(other_metric, rvs)
             end
             false
         end
     else
-        sample(dp.network, decisions, initialization) do rvs
-            aggregate!(dp.metric, rvs)
-            for other_metric in external_metrics
+        sample(dp.model, decisions, initialization) do rvs
+            aggregate!(dp.objective, rvs)
+            for other_metric in metrics
                 aggregate!(other_metric, rvs)
             end
             fn(rvs)
         end
     end
-        
-    (; objective=output(dp.metric), map(output, external_metrics)...)
+    
+    metrics_nt = NamedTuple(metrics) # ugh
+    (; objective=output(dp.objective), map(output, metrics_nt)...)
 end
 
 function simulate!(da::DecisionAlgorithm, dp::DecisionProblem; metrics...)

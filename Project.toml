@@ -9,11 +9,26 @@ DecisionDomains = "b3c2c752-e935-440e-b739-2b15001bb599"
 DecisionNetworks = "a1ae968e-b3ba-4546-81a6-f6e3d3a9391a"
 DecisionProblems = "b716e576-a1f9-415a-b454-baf909aed799"
 DecisionSettings = "c41d4d83-0cc1-4009-96cd-7978f35949ad"
+POMDPTools = "7588e00f-9cae-40de-98dc-e0c70c48cdd7"
+POMDPs = "a93abf59-7444-517b-a68a-c42f96afdd7d"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+RockSample = "de008ff0-c357-11e8-3329-7fe746fe836e"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
+[sources]
+DecisionAlgorithms = {path = "DecisionAlgorithms.jl"}
+DecisionDomains = {path = "DecisionDomains.jl"}
+DecisionNetworks = {path = "DecisionNetworks.jl"}
+DecisionProblems = {path = "DecisionProblems.jl"}
+DecisionSettings = {path = "DecisionSettings.jl"}
+
 [compat]
+POMDPTools = "1.1.0"
+POMDPs = "1.0.0"
 Reexport = "1.2.2"
+RockSample = "0.2.1"
+StaticArrays = "1.9.15"
 Test = "1.11.0"
 
 [sources]

@@ -1,6 +1,6 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.11.3"
+julia_version = "1.11.6"
 manifest_format = "2.0"
 project_hash = "5511ce98d79b0415e4f4e1fb11873d321b3f1280"
 
@@ -170,12 +170,13 @@ uuid = "24462d87-5a31-4c17-8b3b-e3b0ef9969b3"
 version = "0.0.1"
 
 [[deps.DecisionDomains]]
+deps = ["DecisionNetworks", "DecisionProblems"]
 path = "../DecisionDomains.jl"
 uuid = "b3c2c752-e935-440e-b739-2b15001bb599"
 version = "0.0.1"
 
 [[deps.DecisionNetworks]]
-deps = ["Distributions", "ExprTools", "GraphRecipes", "Graphs", "Memoization", "NetworkLayout", "Parameters", "Plots", "Random", "StaticArrays", "StatsBase", "Test"]
+deps = ["Distributions", "ExprTools", "GraphRecipes", "Graphs", "NetworkLayout", "Parameters", "Plots", "Random", "StaticArrays", "StatsBase", "Test"]
 path = "../DecisionNetworks.jl"
 uuid = "a1ae968e-b3ba-4546-81a6-f6e3d3a9391a"
 version = "0.0.5"
@@ -706,12 +707,6 @@ git-tree-sha1 = "c13304c81eec1ed3af7fc20e75fb6b26092a1102"
 uuid = "442fdcdd-2543-5da2-b0f3-8c86c306513e"
 version = "0.3.2"
 
-[[deps.Memoization]]
-deps = ["MacroTools"]
-git-tree-sha1 = "7dbf904fa6c4447bd1f1d316886bfbe29feacf45"
-uuid = "6fafb56a-5788-4b4e-91ca-c0cea6611c73"
-version = "0.2.2"
-
 [[deps.Missings]]
 deps = ["DataAPI"]
 git-tree-sha1 = "ec4f7fbeab05d7747bdf98eb74d130a2a2ed298d"
@@ -769,7 +764,7 @@ version = "0.3.27+1"
 [[deps.OpenLibm_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "05823500-19ac-5b8b-9628-191a04bc5112"
-version = "0.8.1+2"
+version = "0.8.5+0"
 
 [[deps.OpenSSH_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "OpenSSL_jll", "Zlib_jll"]

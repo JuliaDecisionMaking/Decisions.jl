@@ -5,7 +5,6 @@ using Distributions
 using Random
 using ExprTools
 using StaticArrays
-using Memoization
 
 
 using Graphs
@@ -75,6 +74,7 @@ export Dense
 
 export name
 export indices
+export with_hints
 
 include("spaces.jl")
 export Space
@@ -130,6 +130,7 @@ export Recondition
 export IndexExplode
 export MergeForward
 export Rename
+export SetNodeHints
 
 include("show.jl")
 include("std_family.jl")
@@ -145,7 +146,8 @@ export dnplot
 export as_graphs_jl
 
 
-export @markov_edge
+export @markov_alias
+export MarkovAmbiguousTraits
 
 
 end # module DecisionNetworks

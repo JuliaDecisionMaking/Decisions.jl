@@ -59,7 +59,9 @@ known, in order.
 function _crawl_dn(dn, ids_in, ids_out)
     # We don't want to evaluate any plates we don't have to: only the ones between the
     # inputs and the outputs.
-    dynamic_inputs = [k for k in keys(dynamic_pairs(dn)) if k ∈ ids_in]
+    dynamic_inputs = Symbol[k for k in keys(dynamic_pairs(dn)) if k ∈ ids_in]
+
+    println(dynamic_inputs)
 
     input = [Set([ids_in...; keys(ranges(dn))...])...]  
     output = [Set([ids_out...; dynamic_pairs(dn)[dynamic_inputs]...])...]

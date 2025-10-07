@@ -6,7 +6,7 @@ for action nodes in the problem model based on the problem objective.
 ## A warning about decision environments 
 
 In DecisionProblems.jl, no distinction is made between the model of an environment
-(expressed by `model(::DecisionProblem)`) and the environment itself. As such, gents are
+(expressed by `model(::DecisionProblem)`) and the environment itself. As such, agents are
 free to use the problem model in any way they choose, but there is no guarantee that the
 provided `DecisionProblem` is reflective of a "real" environment. More specifically, there
 is no structure defining the way in which an algorithm would get data from the real

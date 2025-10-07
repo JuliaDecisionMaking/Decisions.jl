@@ -25,6 +25,7 @@ export graph
 export initial
 
 include("algorithms.jl")
+export DecisionAlgorithm
 export solve
 export simulate!
 export DecisionAlgorithm
