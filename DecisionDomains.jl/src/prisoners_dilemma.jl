@@ -21,8 +21,11 @@ a_pol = @ConditionalDist Act begin
     end
 end
 
+#=
 s = Live  # initial state of type `State`
 
-# out = sample(dn, (; a = a_pol), (; s)) do vals
-#     println(vals)  # vals is a NamedTuple with keys :a, :r, :sp
-# end
+out = sample(dn, (; a = a_pol), (; s)) do vals
+    println(vals)  # vals is a NamedTuple with keys :a, :r, :sp
+end
+
+=#

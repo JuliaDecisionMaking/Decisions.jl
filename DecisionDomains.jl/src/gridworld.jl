@@ -104,6 +104,8 @@ function Iceworld(; p_slip=0.1, nrows=5, ncols=5, holes=[], target=(5,5))
 end
 
 
+#=
+
 policy = @ConditionalDist Cardinal begin
     rand(rng; s) = rand(rng, support(prob[:a]))   # uniform random
 end
@@ -130,4 +132,8 @@ function run_episode(;max_steps=10)
         steps >= max_steps
     end
 end
-# run_episode()
+
+
+run_episode()
+
+=#

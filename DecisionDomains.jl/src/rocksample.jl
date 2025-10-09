@@ -92,6 +92,16 @@ function RockSampleDecisionsPOMDP(;pomdp = RockSample.RockSamplePOMDP())
 end
 
 
+#=
+
+using DecisionNetworks
+using DecisionProblems
+using POMDPTools
+using POMDPs
+using RockSample
+
+include("DecisionDomains.jl/src/rocksample.jl")
+
 struct RandomSolver <: DecisionAlgorithm end
 
 function DecisionProblems.solve(::RandomSolver, dp::DecisionProblem)
@@ -122,24 +132,11 @@ function episode_rocksample_decisions(; steps=10, rng = MersenneTwister(0),
     end
     return (; traj, G)
 end
-#=
-
-]
-
-activate DecisionDomains.jl
-
-using DecisionNetworks
-using DecisionProblems
-using POMDPTools
-using POMDPs
-using RockSample
 
 
-include("DecisionDomains.jl/src/rocksample.jl")
 rs_prob = RockSampleDecisionsPOMDP()
 rs_solver = RandomSolver()
 
 episode_rocksample_decisions(steps=10);
-
 
 =#

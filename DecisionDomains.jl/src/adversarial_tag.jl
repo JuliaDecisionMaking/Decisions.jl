@@ -1,37 +1,4 @@
-using StaticArrays, Random
-
-
-@enum TAct Left=1 Right=2 Up=3 Down=4 Measure=5
-const Pos = SVector{2,Int}
-
-struct T2State
-    r1::Pos
-    r2::Pos
-    t::Pos
-end
-
-in_bounds(p::Pos, sz::Pos) = (1 <= p[1] <= sz[1]) & (1 <= p[2] <= sz[2])
-
-# One-step robot move under enum action with bounds/obstacles
-function move_robot(sz::Pos, blocked::BitArray{2}, p::Pos, a::TAct)
-    δ = a === Left      ? SVector(0,-1) :
-        a === Right     ? SVector(0, 1) :
-        a === Up        ? SVector(-1,0) :
-        a === Down      ? SVector( 1,0) :
-        SVector(0,0)   # Measure ⇒ no movement
-    np = p + δ
-    (in_bounds(np, sz) && !blocked[np...]) ? np : p
-end
-
-# Target candidate positions (lazy random walk: stay/N/E/S/W)
-function target_candidates(sz::Pos, blocked::BitArray{2}, t::Pos)
-    cands = Pos[t,
-                t + SVector(-1,0), t + SVector(1,0),
-                t + SVector(0,-1), t + SVector(0,1)]
-    [p for p in cands if in_bounds(p, sz) && !blocked[p...]]
-end
-
-function TagCoop2_explicit(; size=(2,2), n_obstacles=1, rng=MersenneTwister(20))
+function TagAdversarial(; size=(10,7), n_obstacles=1, rng=MersenneTwister(20))
     sz = SVector(size...)
     blocked = falses(size...)
     obstacles = Set{Pos}()
@@ -58,21 +25,21 @@ function TagCoop2_explicit(; size=(2,2), n_obstacles=1, rng=MersenneTwister(20))
         t0 = SVector(rand(rng, 1:sz[1]), rand(rng, 1:sz[2]))
     end
 
-    initial = @ConditionalDist @NamedTuple{s::T2State} begin
+    initial = @ConditionalDist @NamedTuple{s::TagState} begin
         # Deterministic:
-        support(; ) = (; s = T2State(r1, r2, t0))
-        pdf(x; )    = (x == (; s = T2State(r1, r2, t0)) ? 1.0 : 0.0)
-        rand(rng; ) = (; s = T2State(r1, r2, t0))
+        support(; ) = (; s = TagState(r1, r2, t0))
+        pdf(x; )    = (x == (; s = TagState(r1, r2, t0)) ? 1.0 : 0.0)
+        rand(rng; ) = (; s = TagState(r1, r2, t0))
         # In case we want uniform initial?
     end
 
-    transition = @ConditionalDist T2State begin
+    transition = @ConditionalDist TagState begin
         function support(; s, a)
             if isnothing(s) || isnothing(a)
                 els = map(Iterators.product(1:size[1], 1:size[2], 
                                             1:size[1], 1:size[2], 
                                             1:size[1], 1:size[2])) do (x1, y1, x2, y2, xt, yt)
-                    T2State(
+                    TagState(
                         SVector((x1, y1)),
                         SVector((x2, y2)),
                         SVector((xt, yt)),
@@ -101,7 +68,7 @@ function TagCoop2_explicit(; size=(2,2), n_obstacles=1, rng=MersenneTwister(20))
             if !isempty(captured)
                 push!(outs, Terminal())
             end
-            append!(outs, [T2State(new_r1, new_r2, t′) for t′ in safe])
+            append!(outs, [TagState(new_r1, new_r2, t′) for t′ in safe])
             Tuple(outs)
         end
 
@@ -121,8 +88,8 @@ function TagCoop2_explicit(; size=(2,2), n_obstacles=1, rng=MersenneTwister(20))
             if sp isa Terminal
                 return captured / n
             else
-                # sp must be T2State(new_r1,new_r2,t′) for some t′ not captured
-                (sp isa T2State) || return 0.0
+                # sp must be TagState(new_r1,new_r2,t′) for some t′ not captured
+                (sp isa TagState) || return 0.0
                 (sp.r1 == new_r1 && sp.r2 == new_r2 && sp.t ∈ cands && sp.t != new_r1 && sp.t != new_r2) || return 0.0
                 return 1.0 / n
             end
@@ -139,25 +106,109 @@ function TagCoop2_explicit(; size=(2,2), n_obstacles=1, rng=MersenneTwister(20))
 
             cands = target_candidates(sz, blocked, s.t)
             t′ = cands[Random.rand(rng, 1:length(cands))]  # uniform random-walk
-            ((new_r1 == t′) || (new_r2 == t′)) ? Terminal() : T2State(new_r1, new_r2, t′)
+            ((new_r1 == t′) || (new_r2 == t′)) ? Terminal() : TagState(new_r1, new_r2, t′)
         end
     end
 
+    # Replace your cooperative `reward` with this
     reward = @ConditionalDist Float64 begin
         function rand(rng; s, a, sp, i)
-            captured = (sp isa Terminal)
-            step_cost(ai::TAct) = (ai == Measure ? -2.0 : -1.0)
-            base = step_cost(a[1]) + step_cost(a[2])
-            captured ? (100.0 + base) : base
+            R = 100.0
+
+            # Post-robot positions (deterministic given s,a)
+            new_r1 = move_robot(sz, blocked, s.r1, a[1])
+            new_r2 = move_robot(sz, blocked, s.r2, a[2])
+
+            # Agent 1's expected payoff (agent 2 gets the negative)
+            ev1 = if new_r1 == s.t && new_r2 == s.t
+                # both landed on the target simultaneously -> symmetric tie
+                0.0
+            elseif new_r1 == s.t
+                +R                       # immediate capture by agent 1
+            elseif new_r2 == s.t
+                -R                       # immediate capture by agent 2
+            else
+                ev1 = 0.0                     # no tag yet
+            end
+
+            return (i == 1 ? ev1 : -ev1)
         end
-        # `support` and `pdf` are optional for rewards; omitted for brevity.
     end
 
     # ---- Per-agent action space (plated node a[i]) ----
-    a_space = FiniteSpace((Left, Right, Up, Down, Measure))
+    a_space = FiniteSpace((Left, Right, Up, Down, Stay))
 
     MG(DiscountedReward(0.99), initial, (; i = 2);
        a = a_space,
        sp = transition,
        r  = reward)
 end
+
+
+#=
+
+######################################################
+# Use case 3: Fictitious play via problem transformations
+######################################################
+
+using Decisions 
+
+# Average (uniform) over a vector of ConditionalDist policies, state-wise.
+function empirical_policy(policies::Vector{ConditionalDist})
+    @ConditionalDist Decisions.DecisionDomains.TagAct begin
+        rand(rng; s) = begin
+            j = rand(rng, 1:length(policies))          # sample a past policy uniformly
+            rand(rng, policies[j]; s=s)                 # then sample its action at state s
+        end
+        pdf(x; s) = mean(π -> pdf(π, x; s=s), policies) # state-conditioned average density
+        support(; s) = support(policies[1]; s=s)        # assume identical supports
+    end
+end
+
+mg = Decisions.DecisionDomains.TagAdversarial(size=(5,5))
+mg_exploded = mg |> IndexExplode(:i)
+
+# Uniform random policy (per state)
+π_rand = @ConditionalDist Decisions.DecisionDomains.TagAct begin
+    rand(rng; s) = rand(rng, collect(support(mg[:a]; s=s)))
+    pdf(x; s) = 1 / length(collect(support(mg[:a]; s=s)))
+    support(; s) = support(mg[:a]; s=s)
+end
+
+π1_hist = ConditionalDist[]            # past BRs for P1
+π2_hist = ConditionalDist[]            # past BRs for P2
+π1_avg  = π_rand
+π2_avg  = π_rand
+
+solver = Decisions.DecisionAlgorithms.ValueIteration(0.99)
+
+K = 100
+for k in 1:K
+    # --- Best response for Player 1 against Player 2's *average* ---
+    mdp1 = mg_exploded               |>
+           Implement(; a_2 = π2_avg) |>
+           MergeForward(:r_2, :a_2)  |>
+           Rename(; a_1=:a, r_1=:r)
+
+    println("FSP Iteration $k")
+    sol1 = solve(solver, mdp1)
+    π1_br = sol1.a                         # <-- the BR policy
+    push!(π1_hist, π1_br)
+    π1_avg = empirical_policy(π1_hist)     # update average
+
+    # --- Best response for Player 2 against Player 1's *average* ---
+    mdp2 = mg_exploded               |>
+           Implement(; a_1 = π1_avg) |>
+           MergeForward(:r_1, :a_1)  |>
+           Rename(; a_2=:a, r_2=:r)
+
+    sol2 = solve(solver, mdp2)
+    π2_br = sol2.a
+    push!(π2_hist, π2_br)
+    π2_avg = empirical_policy(π2_hist)
+end
+
+# Final FSP policies to *play/evaluate* are π1_avg, π2_avg.
+
+
+=#
