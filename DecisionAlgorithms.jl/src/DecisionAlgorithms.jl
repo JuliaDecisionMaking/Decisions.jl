@@ -1,8 +1,8 @@
 module DecisionAlgorithms
 
-    using DecisionNetworks
-    using DecisionProblems
+    # using DecisionNetworks
+    # using DecisionProblems
 
-    include("vi.jl")
+    # include("vi.jl")
 
 end # module DecisionAlgorithms
