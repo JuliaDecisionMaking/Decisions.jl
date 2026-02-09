@@ -13,13 +13,7 @@ struct DecisionNetwork{nodes, dynamic_pairs, ranges, B<:NamedTuple}
         N_standard, D_standard, R_standard = _standardize_dn_type(N, D, R)
 
         bhv = NamedTuple(impls)
-        bhv_as_dists = map(keys(bhv)) do node_id
-            K = conditions(DecisionNetwork{N, D, R}, node_id)
-            convert(ConditionalDist{K}, bhv[node_id])
-        end
-        new_bhv = NamedTuple{keys(bhv)}(bhv_as_dists)
-
-        new{N_standard, D_standard, R_standard, typeof(new_bhv)}(new_bhv)
+        new{N_standard, D_standard, R_standard, typeof(bhv)}(bhv)
     end
 
     DecisionNetwork{N, D}(R::NamedTuple=(;); impls...) where {N, D} = DecisionNetwork{N, D, R}(; impls...)
@@ -29,12 +23,12 @@ end
     const DecisionGraph = Type{<:DecisionNetwork}
     DecisionGraph(nodes, dynamic_pairs=nothing, ranges=nothing)
 
-A decision graph: the graph structure of a decision network, with none of the distributions
-implemented. 
+A decision graph: the underlying graph structure of a decision network, with
+none of the distributions implemented. 
 
-If `dynamic_pairs` or `ranges` is `nothing`, the corresponding `DecisionNetwork` type
-parameter is left unspecified. (This way, it is possible to define a `DecisionGraph`
-without knowing the dynamic pairs or ranges ahead of time.) 
+If `dynamic_pairs` or `ranges` is `nothing`, the corresponding `DecisionNetwork`
+type parameter is left unspecified. (This way, it is possible to define a
+`DecisionGraph` without knowing the dynamic pairs or ranges ahead of time.) 
 """
 const DecisionGraph = Type{<:DecisionNetwork}
 

@@ -83,7 +83,7 @@ export TypeSpace
 export RangeSpace
 export SingletonSpace
 
-include("conditional_dists.jl")
+include("conditional_dists/conditional_dists.jl")
 export ConditionalDist
 export AnonymousDist
 export UndefinedDist
@@ -147,7 +147,6 @@ export DecPOMDP_DN
 export POMG_DN
 
 include("visualization.jl")
-export dnplot
 export as_graphs_jl
 
 
