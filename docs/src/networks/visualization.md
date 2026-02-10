@@ -2,6 +2,7 @@
 
 ```@setup viz
 using Decisions
+using Plots
 ```
 
 ## `Base.show`
@@ -27,11 +28,7 @@ internals](https://github.com/JuliaLang/julia/issues/29428).
 
 ## Plots.jl
 
-Use `dnplot` to visualize a `DecisionNetwork` or a `DecisionGraph` into a `Plots.jl` plot.
-
-```@docs
-dnplot
-```
+Decisions.jl has Plots.jl support (via Graphs.jl). Use `plot` to visualize a `DecisionNetwork` or a `DecisionGraph` into a `Plots.jl` plot.
 
 This can be very useful to debug the specific definition of particular decision graphs. For
 instance, we can query the structure of a particular Dec-POMDP:
@@ -43,7 +40,7 @@ my_decpomdp = DecPOMDP_DN((; i=4);
     sp = (; s, a) -> "successor state"
 )
 
-dnplot(my_decpomdp)
+plot(my_decpomdp)
 ```
 
 As before, parallel edges and independently sampled nodes are denoted with array notation.
@@ -63,7 +60,7 @@ We can also query the structure of Dec-POMDPs _in general_ (that is, the decisio
 `DecPOMDP_DN`):
 
 ```@example viz
-dnplot(DecPOMDP_DN)
+plot(DecPOMDP_DN)
 ```
 
 Since only `DecisionNetworks` carry node implementations, without which it is impossible to

@@ -1,6 +1,5 @@
-
-using Plots
 using GraphRecipes
+using RecipesBase
 
 """
     as_graphs_jl(djl)
@@ -40,15 +39,9 @@ function as_graphs_jl(djl_graph::Union{DecisionGraph, DecisionNetwork})
 end
 
 
-"""
-    dnplot(d::DecisionGraph; kws...)
-    dnplot(d::DecisionNetwork; kws...)
+@recipe function plot(dg::Union{DecisionGraph, DecisionNetwork})
 
-    Visualize the decision network or decision graph `d` via Plots.jl.
-
-    Keywords are passed into `graphplot`; see its documentation for details.
-"""
-function dnplot(dg::Union{DecisionGraph, DecisionNetwork}; kws...)
+    println("Getting dnplot args")
     g, id_map = as_graphs_jl(dg)
     
     # 1: Dynamically updated nodes should be readable left-to-right with their counterparts
@@ -117,20 +110,18 @@ function dnplot(dg::Union{DecisionGraph, DecisionNetwork}; kws...)
         end
         return 1
     end
-    
-    # TODO: Deal with overrides in kws
 
-    graphplot(g; layout_kw=Dict(:x=>x, :y=>y, :free_dims=>[]), 
-        method=:stress,
-        edgelabel,
-        curves=false,
-        names,
-        markerstrokestyle=_nodeoutline(dg),
-        edgewidth,
-        nodeshape,
-        nodecolor=[_nodecolor(dg, s) for s in node_names(dg)],
-        kws...
-    )
+
+    layout_kw-->Dict(:x=>x, :y=>y, :free_dims=>[]),
+    method-->:stress
+    edgelabel-->edgelabel
+    curves-->false
+    names-->names
+    markerstrokestyle-->_nodeoutline(dg)
+    edgewidth-->edgewidth
+    nodeshape-->nodeshape
+    nodecolor-->[_nodecolor(dg, s) for s in node_names(dg)]
+    g
 end
 
 _nodecolor(dn, s) = (s ∈ keys(nodes(dn))) ? :lightgray : :white
