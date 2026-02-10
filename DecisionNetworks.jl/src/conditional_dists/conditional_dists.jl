@@ -1,5 +1,7 @@
 
 
+
+
 # Conditional distribution !eq DN with one node.
 #   A DN with one node is a _labelled_ conditional distribution.
 
@@ -27,6 +29,9 @@
 
 # But there are some things that should only work on labelled dists (ie, networks):
 # fix, unfix
+# names
+
+# rvs
 # conditions
 
 
