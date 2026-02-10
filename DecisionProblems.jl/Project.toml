@@ -1,11 +1,13 @@
 name = "DecisionProblems"
 uuid = "b716e576-a1f9-415a-b454-baf909aed799"
-authors = ["Mel Krusniak <mel.krusniak@vanderbilt.edu>", "Jackson Wagner <jackson.wagner-1@colorado.edu>", "Kyle Wray <k.wray@northeastern.edu>", "Zachary Sunberg <zachary.sunberg@colorado.edu>", "Tyler Becker <tyler.becker-1@colorado.edu>"]
 version = "0.0.1"
+authors = ["Mel Krusniak <mel.krusniak@vanderbilt.edu>", "Jackson Wagner <jackson.wagner-1@colorado.edu>", "Kyle Wray <k.wray@northeastern.edu>", "Zachary Sunberg <zachary.sunberg@colorado.edu>", "Tyler Becker <tyler.becker-1@colorado.edu>"]
 
 [deps]
+DecisionNetworks = "a1ae968e-b3ba-4546-81a6-f6e3d3a9391a"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+DecisionNetworks = "0.0.5"
 StaticArrays = "1.9.14"
 julia = "1.11"
