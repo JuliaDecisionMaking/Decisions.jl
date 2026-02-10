@@ -1,7 +1,7 @@
 name = "Decisions"
 uuid = "3911d90d-9e38-4fe1-910a-415423006358"
-authors = ["Mel Krusniak <mel.krusniak@vanderbilt.edu>", "Jackson Wagner <jackson.wagner-1@colorado.edu>", "Kyle Wray <k.wray@northeastern.edu>", "Zachary Sunberg <zachary.sunberg@colorado.edu>", "Tyler Becker <tyler.becker-1@colorado.edu>"]
 version = "0.0.1"
+authors = ["Mel Krusniak <mel.krusniak@vanderbilt.edu>", "Jackson Wagner <jackson.wagner-1@colorado.edu>", "Kyle Wray <k.wray@northeastern.edu>", "Zachary Sunberg <zachary.sunberg@colorado.edu>", "Tyler Becker <tyler.becker-1@colorado.edu>"]
 
 [deps]
 DecisionAlgorithms = "24462d87-5a31-4c17-8b3b-e3b0ef9969b3"
@@ -11,7 +11,6 @@ DecisionProblems = "b716e576-a1f9-415a-b454-baf909aed799"
 DecisionSettings = "c41d4d83-0cc1-4009-96cd-7978f35949ad"
 POMDPTools = "7588e00f-9cae-40de-98dc-e0c70c48cdd7"
 POMDPs = "a93abf59-7444-517b-a68a-c42f96afdd7d"
-Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 RockSample = "de008ff0-c357-11e8-3329-7fe746fe836e"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
@@ -27,7 +26,6 @@ DecisionSettings = {path = "DecisionSettings.jl"}
 [compat]
 POMDPTools = "1.1.0"
 POMDPs = "1.0.0"
-Plots = "1.41.0"
 Reexport = "1.2.2"
 RockSample = "0.2.1"
 StaticArrays = "1.9.15"

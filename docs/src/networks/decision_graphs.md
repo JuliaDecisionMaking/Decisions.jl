@@ -1,5 +1,6 @@
 ```@setup dgs
 using Decisions
+using Plots
 ```
 
 # Decision graphs
@@ -177,7 +178,7 @@ To visually double-check that your new decision graph is correct, use [`dnplot`]
 aware that networks with many nodes may render poorly):
 
 ```@example dgs
-dnplot(MOMDP)
+plot(MOMDP)
 ```
 
 !!! tip
