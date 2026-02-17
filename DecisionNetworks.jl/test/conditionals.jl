@@ -1,5 +1,5 @@
 
-@testset "Conditional distributions" begin
+@testset "Anonymous distributions" begin
     @testset "Use PDF or generative form interchangeably" begin
         unif(; l, u) = rand()*(u-l) + l 
         unif(x; l, u) = 1/(u-l)

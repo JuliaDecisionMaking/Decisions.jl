@@ -203,6 +203,28 @@ prev(dn::DecisionGraph, rv::Symbol) = findfirst((i) -> i==rv, dynamic_pairs(dn))
 
 
 """
+    rand(dn::DecisionNetwork; meta, inputs...)
+
+Samples a decision network given `inputs`.
+
+If the decision network is a _dynamic_ decision network, samples until
+`terminal` is sampled from a node marked as possibly terminal.
+
+Returns a NamedTuple `NamedTuple` where each key is is a random variable name
+and each value its realizations (or an array of such NamedTuples, for a dynamic DN).
+"""
+function Base.rand(dn::DecisionNetwork; meta=(;), inputs...)
+    stop_fn = (:stop_fn ∈ keys(meta)) ? meta[:stop_fn] : (c)->false
+
+    
+
+    sample(dn, (;), inputs |> NamedTuple, nothing) do c
+        println(c)
+        stop_fn(c)
+    end
+end
+
+"""
     sample(fn = (_) -> false, dn::DecisionNetwork [, decisions::NamedTuple, input::NamedTuple, output::Tuple])
 
 Sample nodes or plates `out` in decision network `dn` based on input values `in` and node
@@ -210,7 +232,7 @@ implementations provided by `decisions` and `dn.implementation`. `fn`, if presen
 each iteration of a (dynamic) network on a NamedTuple mapping the names `out` to their
 values, and stops when `fn` returns true.
 
-Returns `Terminal()` if a terminal condition is reached. Otherwise, returns a NamedTuple
+Returns `terminal` if a terminal condition is reached. Otherwise, returns a NamedTuple
 mapping the names `out` to their values after the last (or only) iteration. 
 
 Only ancestors of `out`, up to (but not including) the nodes in `in`, are sampled. If any of
@@ -320,6 +342,7 @@ end
         while true
             $second_pass_block
         end
+        output
     end
     if as_expr
         Meta.quot(q)

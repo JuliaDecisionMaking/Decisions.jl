@@ -84,14 +84,8 @@ export RangeSpace
 export SingletonSpace
 
 include("conditional_dists/conditional_dists.jl")
-export ConditionalDist
-export AnonymousDist
-export UndefinedDist
-export CompoundDist
-export UniformDist
-export CollectDist
-export FixedDist
-export @ConditionalDist
+include("conditional_dists/anonymous_dist.jl")
+export @ADist
 
 export support
 export pdf

@@ -166,16 +166,17 @@ function _make_node_assignment(dn, id; in_place=false)
             $(expr(output_def)) = $call
         end
     else
+        terminal_behavior = in_place ? quote break end : quote return terminal end
         if isempty(indices(nodes(dn)[id][2]))
             quote
                 $(expr(output_def)) = $call
-                isterminal($(expr(output_def))) && return
+                isterminal($(expr(output_def))) && $terminal_behavior
             end
         else
             tmp_id = gensym()
             quote
                 $tmp_id = $call
-                isterminal($tmp_id) && return
+                isterminal($tmp_id) && $terminal_behavior
                 $(expr(output_def)) = $tmp_id
             end
         end

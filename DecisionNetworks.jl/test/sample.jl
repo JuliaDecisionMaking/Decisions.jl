@@ -1,12 +1,24 @@
 
 
-@testset "Sample from a POMDP" begin
-    Z = (s) -> s + randn()
-    T = (s, a) -> s + a
-    R = (s, a, sp) -> sp
+@testset "Sample from an MDP" begin
+    action_dist = @ADist
 
-    pomdp = POMDP(T, Z, R)
+    Policy = @ADist
+    Base.rand(::Policy; s, rest...) = s + randn()
 
-    r = sample(pomdp, (; a = (o, m) -> 10), (; s=0, m=0), (:r,))[:r]
+    Transition = @ADist
+    function Base.rand(::Transition; s, a, rest...) 
+        if s <= 1
+            s + a
+        else
+            terminal
+        end
+    end
+
+    Reward = @ADist
+    Base.rand(::Reward; s, a, sp, rest...) = sp
+
+    mdp = MDP_DN(; a=Policy(), sp = Transition(), r = Reward())
+    r = Base.rand(mdp; s=1)[:r]
     @test r > 0
 end

@@ -3,10 +3,9 @@
     DecisionProblem
 
 A decision problem, formally stated: a union of a _model_, given as a `DecisionNetwork`, an
-_objective_, given as a `DecisionNetwork`, and an optional initial distribution, given as a
-ConditionalDist with no conditions.
+_objective_, given as a `DecisionNetwork`, and an optional initial distribution.
 """
-struct DecisionProblem{M <: DecisionMetric, DG <: DecisionNetwork, I <: Union{ConditionalDist{()}, Nothing}}
+struct DecisionProblem{M <: DecisionMetric, DG <: DecisionNetwork, I}
     model::DG
     objective::M
     initial::I

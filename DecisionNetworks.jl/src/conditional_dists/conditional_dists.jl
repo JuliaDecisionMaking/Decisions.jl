@@ -36,10 +36,9 @@
 
 
 # Reserved random variable names
-#   rng
-#   meta
-#   params
-#   hparams
+#   rng 
+#   meta: Reserved for metadata provided to distributions. May or may not be present.
+#   params, hparams
 
 
 
@@ -89,15 +88,6 @@ function Random.rand!(cd, dest; kwargs...)
 end
 
 """
-    rand(rng=default_rng(), cd::ConditionalDist; kwargs...)
-
-Draw a sample from the conditional distribution `cd` when it is conditioned on
-`conditions`.
-"""
-Random.rand(cd::ConditionalDist; kwargs...) = Random.rand(Random.default_rng(), cd; kwargs...)
-
-
-"""
     pdf(cd, x; conditions...)
 
 Evaluate the probability mass or probability density of a random variable
@@ -106,7 +96,6 @@ variables in `conditions`.
 """
 function pdf end
 
-
 """
     logpdf(cd, x; kwargs...)
 
@@ -114,9 +103,7 @@ Evaluate the natural logarithm of the probability mass or probability density of
 the random variable distributed according to `cd` having the value `x`, given
 values of conditioning variables in `kwargs`.
 """
-logpdf(cd::ConditionalDist, x; kwargs...) = exp(pdf(cd, x; kwargs...))
-
-
+function logpdf end
 
 
 # """

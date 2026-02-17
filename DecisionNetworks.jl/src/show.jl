@@ -82,13 +82,3 @@ function Base.show(io::IO, z::DecisionNetwork)
         )
     end
 end
-
-function Base.show(io::IO, z::ConditionalDist{K, T}) where {K, T}
-    if isempty(K)
-        print(io, Base.typename(typeof(z)).wrapper, ": ", "P(::", T, " | ")
-        printstyled(io, "(unconditioned)"; color=:light_black)
-        print(io, ")")
-    else
-        print(io, Base.typename(typeof(z)).wrapper, ": ", "P(::", T, " | ", join(K, ", "), ")")
-    end
-end
