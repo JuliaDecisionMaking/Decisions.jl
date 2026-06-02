@@ -7,8 +7,23 @@ most basic Markov decision processes, to rich and expressive multi-agent, semi-M
 multi-objective extensions, unifying decision-, control-, and game-theoretic models.
 
 > [!WARNING] 
-> Decisions.jl is under active development. It is currently in **silent beta**:
-> publically accessible but not promoted or registered. Expect bugs and breaking changes. 
+> Decisions.jl is under active development.
+>
+
+## Features
+Decisions.jl represents decision problems using their underlying decision networks. A very broad and useful class of problems can be represented in this way. 
+![](https://i.ibb.co/7LjCF13/ddns.png)
+
+Decisions.jl provides transformations to change problem classes with minimal disruption to the domain or solver implementation. Common transformations from adding agents to belief spacing - which usually require a frustrating amount of code rewriting in a bespoke framework - can be deployed to Decisions.jl problems in just a few lines. Using these transformations, it's easy to intuitively navigate the space of problem classes by iteratively adding or removing components.
+
+![](https://i.ibb.co/MKjz7zq/transforms.png)
+
+Decisions.jl supports problem classes from the very common to the niche to the yet-unnamed. When possible, meaningful traits (like "partially observable" or "multiagent") relate these classes, forming a natural scaffold that can be traversed with transformations. 
+
+![](https://i.ibb.co/5Ws5FXF6/problem-tree.png)
+
+By leveraging Julia's just-in-time compilation, standard frameworking (sampling, rollouts, and so on) is automatically built for any decision problem that can be represented with a DDN. No more hand-writing simulator code for slight problem variations.
+
 
 ## Package structure
 Decisions.jl is factored into three framework packages:
